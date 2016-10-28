@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .has-error{background:orangered;}
+    </style>
+</head>
+<body>
+<!--ng-required 验证的时候 是验证required-->
+<!--若果在angular内部做验证 要给form加上novalidata表示不用h5自带的验证 必须要加action不然提交不了-->
+<form action="" method="post" name="userform" novalidate>
+    <!--ng-model对应input的文笔值  文笔值改变 数据模型就发生改变-->
+    用户名:<input type="text" name="username" id="username" ng-model="user.username"
+               ng-pattern="/[\u4e00-\u9fa5]/" ng-required ng-class="{'has-error':
+              userform.username.$dirty && userform.username.$invalid}"><br>
+
+    <!--验证错误的时候显示下面div  当输入框有值 并且值是不正确的时候 才显示-->
+    <div ng-show="userform.username.$dirty && userform.username.$invalid">
+        <!--错误类型 $error是必填的   $error是一个错误对象 保存所有的错误类型
+        错误属性是required,pattern 值是ng-required,ng-pattern对应的值 -->
+        <span ng-show="userform.username.$error.required">用户名不能为空值</span>
+        <!--错误类型 $error有值 但是值不合法的时候-->
+        <span ng-show="userform.username.$error.pattern">用户名必须填写中文</span>
+    </div>
+
+    邮箱:<input type="email" name="email" id="email" ng-model="user.email" ng-required
+              ng-class="{'has-error':userform.email.$dirty && userform.email.$invalid}"><br>
+    <div ng-show="userform.email.$dirty && userform.email.$invalid">
+        <span ng-show="userform.email.$error.required">邮箱不能为空值</span>
+        <!--eamil的合法性本身就是email内部验证的 所以判断email的合法性 直接在$error错误对象下的属性写emial-->
+        <span ng-show="userform.email.$error.email">邮箱必须合法</span>
+    </div>
+
+    密码:<input type="password" name="password" id="password" ng-model="user.password"
+              ng-required="true" ng-minlength="6" ng-maxlength="12"
+              ng-class="{'has-error':
+                userform.password.$dirty && userform.password.$invalid}"><br>
+    <div ng-show="userform.password.$dirty && userform.password.$invalid">
+        <span ng-show="userform.password.$error.required">密码不能为空值</span>
+        <span ng-show="userform.password.$error.minlength">密码不能小于6位</span>
+        <span ng-show="userform.password.$error.maxlength">密码不能大于12位</span>
+    </div>
+
+    <!-- ng-class={key:value} 当value为true的时候 key就作用样式名  当输入填写并且不合法的时候就作用加载样式-->
+    重复密码:<input type="password" name="repassword" id="repassword" ng-model="user.repassword"
+                ng-required="true" ng-minlength="6" ng-maxlength="12"
+                ng-class="{'has-error':
+                (userform.repassword.$dirty && userform.repassword.$invalid) ||
+                (userform.repassword.$dirty) && (userform.password != userform.repassword)}"><br>
+    <!-- 两次密码输入不一样的时候 也加红背景-->
+    <div ng-show="userform.repassword.$dirty && userform.repassword.$invalid">
+        <span ng-show="userform.repassword.$error.required">重复密码不能为空值</span>
+        <span ng-show="userform.repassword.$error.minlength">密码不能小于6位</span>
+        <span ng-show="userform.repassword.$error.maxlength">密码不能大于12位</span>
+        <span ng-show="(userform.repassword.$dirty && userform.repassword.$invalid) ||
+                (userform.repassword.$dirty) && (userform.password != userform.repassword)">
+            2次密码输入不一样
+        </span>
+    </div>
+
+    <!--表单填写了 并且填写不合法 就不能点注册按钮-->
+    <button type="button" ng-click="save()" ng-disabled="userform.$dirty && userform.$invalid">注册</button>
+
+</form>
+
+</body>
+</html>

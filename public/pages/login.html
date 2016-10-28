@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .has-error{background:orangered;}
+    </style>
+</head>
+<body>
+
+<!--若果在angular内部做验证 要给form加上novalidata表示不用h5自带的验证-->
+<form name="userform" method="post" novalidata>
+    用户名:<input type="text" name="username" id="username" ng-model="user.username"
+               ng-pattern="/[\u4e00-\u9fa5]/" ng-required="true" ng-class="{'has-error':
+              userform.username.$dirty && userform.username.$invalid}"><br>
+
+    <!--验证错误的时候显示下面div  当输入框有值 并且值是不正确的时候 才显示-->
+    <div ng-show="userform.username.$dirty && userform.username.$invalid">
+        <!--错误类型 $error是必填的   $error是一个错误对象 保存所有的错误类型
+        错误属性是required,pattern 值是ng-required,ng-pattern对应的值 -->
+        <span ng-show="userform.username.$error.required">用户名不能为空值</span>
+        <!--错误类型 $error有值 但是值不合法的时候-->
+        <span ng-show="userform.username.$error.pattern">用户名必须填写中文</span>
+    </div>
+
+    密码:<input type="password" name="password" id="password" ng-model="user.password"
+              ng-required="true" ng-minlength="6" ng-maxlength="12"
+              ng-class="{'has-error':
+                userform.password.$dirty && userform.password.$invalid}"><br>
+    <div ng-show="userform.password.$dirty && userform.password.$invalid">
+        <span ng-show="userform.password.$error.required">密码不能为空值</span>
+        <span ng-show="userform.password.$error.minlength">密码不能小于6位</span>
+        <span ng-show="userform.password.$error.maxlength">密码不能大于12位</span>
+    </div>
+
+    <!--表单填写了 并且填写不合法 就不能点注册按钮-->
+    <button type="button"  ng-click="login()" ng-disabled="
+    userform.$dirty && (userform.$invalid && userform.password!=userform.repassword)">
+        登录
+    </button>
+
+</form>
+
+</body>
+</html>

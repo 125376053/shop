@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>后台商品管理</title>
+</head>
+<body>
+
+<!----------------------------------------添加和编辑---------------------------------------->
+<button add-goods>增加</button>
+<button batch-delete-goods>批量删除</button>
+搜索<input type="text" ng-model="keyword" ng-change="filter()" name="keyword">
+
+<!--弹出框-->
+<form action="">
+    <div id="box" style="display:none;background:pink;margin:10px;padding:30px;">
+        <button>close</button>
+        <h4>增加商品</h4>
+
+        <!--编辑和添加商品在一个页面上 为了简单实现 编辑之后更新数据 编辑是通过编辑商品_id实现的
+        可以在保存商品的时候 把商品id保存到隐藏域中 然后编辑的时候通过隐藏域找对应的商品信息-->
+
+        商品id<input type="text" ng-model="good._id"><br>
+
+        商品名称<input type="text" ng-model="good.name" id="name" ><br>
+        商品价格<input type="text" ng-model="good.price" id="price" ><br>
+        商品图片<input type="text" ng-model="good.img" id="img" ><br>
+
+        <button id="add" ng-click="save()">确定</button>
+        <button id="cha">取消</button>
+    </div>
+</form>
+
+<table width="100%" border="1px solid red;">
+    <!--商品的标题栏-->
+    <tr>
+        <td><input type="checkbox" select-all-goods id="selectAllGoods"></td>
+        <td>名称</td>
+        <td>价格</td>
+        <td>图片</td>
+        <td>操作</td>
+    </tr>
+
+    <!--所有的商品信息  track by $index数组里商品可以相同 按照索引来迭代-->
+    <!--按照索引迭代 $index=0 1 2 3 4 5 6-->
+    <!--goods是数据库里商品的列表 后台返给前台的 前台得到goods后 通过angular模板渲染出来-->
+    <tr ng-repeat="good in goods track by $index">
+        <td><input type="checkbox" data-id="{{good._id}}" name="chkItem" select-good-item></td>
+        <td>{{good.name}}</td>
+        <td>{{good.price}}</td>
+        <td><img style="width:50px;height:50px;" ng-src="{{good.img}}"></td>
+        <td>
+            <!--$index就可以指明是第几个商品对象信息-->
+            <button data-index="{{$index}}" edit-goods>编辑</button>
+            <button data-index="{{$index}}" view-goods>查看</button>
+            <button data-index="{{$index}}" delete-goods>删除</button>
+        </td>
+    </tr>
+
+</table>
+
+<!-- 分页-->
+<ul>
+    <li><span>上一页</span></li>
+    <li ng-repeat="page in pages"><span>{{page}}</span></li>
+    <li><span>下一页</span></li>
+</ul>
+
+<!----------------------------------------查看---------------------------------------->
+<div id="sox" style="display:none;background:pink;margin:10px;padding:30px;">
+    <button>关闭</button>
+    <h4 modal-title>查看商品</h4>
+    <img style="width:200px;height:200px" ng-src="{{good.img}}" alt="{{good.name}}"/>
+    <h3>{{good.name}}</h3>
+    <p><span>{{good.price}}</span></p>
+    <button id="view">取消</button>
+</div>
+
+<!----------------------------------------删除---------------------------------------->
+<div id="pox" style="display:none;background:pink;margin:10px;padding:30px;">
+    <button>关闭</button>
+    <h4 modal-title>确认删除</h4>
+    请问你是否确认要删除{{good.name}}?
+    <button ng-click="delete()" id="none">确定</button>
+    <button id="del">取消</button>
+</div>
+
+</body>
+</html>
